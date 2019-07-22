@@ -20,4 +20,50 @@
 
 思路分析：
 一开始我也以为这个是贪心算法然后准备放个递归啥的来做，后来发现此题不是想象中的一个一个试。举例子： 3 3 5 分给3人 -> 3 3 3 显而易见，当然
-1000 4 4 300  分给4人 -> 300 300 300 300 我们可以看到因为每个人分的东西都是一样的，那么
+1000 4 4 300  分给4人 -> 300 300 300 300 我们可以看到因为每个人分的东西都是一样的，那么可以直接取一个ans函数专门存储可以满足的人数，那么用二分找到
+一个完美的体积，每个派返回一个“可以满足标准量”的派个数，如果ans=人数，那么符合条件。ans>人数，则说明标准体积过小，让体积增大。
+
+所以此题实际上是一个二分
+#include <iostream>
+#include<cstdio>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+const int maxn=10000+10;
+const double pi=3.141592653589;
+int n,m;
+double a[maxn],maxa;
+void solve()
+{
+    double mid,l=0,r=maxa*maxa*pi*100000;
+    int ans=0;
+    while(l+0.00001<r)//l+0.00001类型转换，让原本没有小数的l出现double精度
+    {
+        ans=0;
+        mid=(l+r)/2;
+        for(int i=0;i<n;i++)
+            ans+=int(a[i]/mid);
+        if(ans<m) r=mid;
+        else l=mid;
+    }
+    printf("%.3lf\n",l);
+}
+int main()
+{
+    cin>>n>>m;//m个人，n个派
+    m++;//m包括自己
+     maxa=0;
+    double t;
+    for(int i=0;i<n;i++)
+    {
+        scanf("%lf",&t);
+        a[i]=t*t*pi;
+        maxa=max(maxa,a[i]);
+    }
+    solve();
+    return 0;
+}
+
+
+注意：1.solve函数要先出现，因为main函数的一些参数还没定义。2.输出函数和输入函数的%/.3lf要记录清楚不要忘了。 3.algorithm很好用 4
+全局变量就不要之后再定义，容易出错。
